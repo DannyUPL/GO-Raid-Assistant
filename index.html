@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pokémon Test</title>
+    <meta charset="utf-8"> <!--UTF8 Character set-->
+    <script src="pokemon_info.js"></script> <!--This sets the Pokémon info-->
+    <link rel="stylesheet" href="style.css"> <!--Custom stylings-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->
+  </head>
+
+<body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This selects and displays the info for a random Pokémon among other tasks-->
+
+<div class="container-fluid">
+	<div style="text-align:center;padding-top:2em;padding-bottom:2em;">
+		<form autocomplete="off" onsubmit="return show_pokemon_info_from_entry()" onfocusout="activate_search_suggestion()">
+		  <div class="autocomplete" style="width:300px;">
+			<input id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Name">
+			<div id="suggestion" style="text-align:left; padding:1em; font-weight:bold; background-color:#dbcfc5; display:none; cursor: pointer;" onclick=activate_search_suggestion()></div>
+		  </div>
+		</form>
+		<img id="pokemon_image">
+		<h1 id="pokemon_name"></h1>
+		<h1 id="pokemon_type"></h1>
+		<h1 id="pokemon_fast"></h1>
+		<h1 id="pokemon_charged"></h1>
+		<h1 id="pokemon_stats"></h1>
+	</div>
+</div>
+
+</body>
+</html>
