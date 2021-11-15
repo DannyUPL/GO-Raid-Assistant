@@ -3,7 +3,7 @@ import requests,csv
 link = "https://pokemon.gameinfo.io/en/pokemon/" #Link to be used to find data.
 pokedex=[] #Init array of Pokémon information.
 
-for i in range(1,5):#721): #Loop through each Pokémon that exists.
+for i in range(1,721): #Loop through each Pokémon that exists.
 
     species_link=(link+str(i)) #Generate a link for this Pokémon species.
     f = requests.get(species_link).text #Retrieve HTML content of page.
