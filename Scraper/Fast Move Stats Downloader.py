@@ -8,7 +8,7 @@ with open('Spreadsheet.csv', 'r') as csvfile: #Open the spreadsheet created by t
     pokemon_data.append(row) #Write each row into the array of Pokémon data.
 del pokemon_data[0]
 
-fast_moves=[] #Init charge moves list.
+fast_moves=[] #Init fast moves list.
 for pokemon in pokemon_data: #Loop through each Pokémon's stats.
     fast_moves_this_pokemon=pokemon[3].split("#") #Extract a list of this Pokémon's potential fast moves.
     for move in fast_moves_this_pokemon: #Loop through each move in the generated list.
