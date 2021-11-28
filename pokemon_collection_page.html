@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pokémon Test</title>
+    <meta charset="utf-8"> <!--UTF8 Character set-->
+    <script src="pokemon_collection.js"></script> <!--This sets the Pokémon info-->
+    <link rel="stylesheet" href="style.css"> <!--Custom stylings-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->
+  </head>
+
+<body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This selects and displays the info for a random Pokémon among other tasks-->
+
+<div class="container-fluid">
+
+	<div style="text-align:center;padding-top:2em;padding-bottom:2em;">
+
+		<img id="pokemon_image">
+		<h1 id="pokemon_name"></h1>
+		<h1 id="pokemon_type"></h1>
+		
+		<form autocomplete="off" onsubmit="return activate_search_suggestion()" onfocusout="activate_search_suggestion()">
+		  <div class="autocomplete" style="padding:1em;width:300px;">
+			<input id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Species">
+			<div id="suggestions"></div>
+		  </div>
+		</form>
+
+		<div class="autocomplete" style="padding:1em;width:300px;">
+			<input id="nickname_input" disabled type="text" name="name_input" placeholder="Enter Nickname">
+		</div>
+			
+		<div class="container" style="padding:1em;text-align:center;">
+			<input type="number" id="level_input" onchange="update_cp_prediction()" placeholder="Level" name="level_input" min="1" max="50" step="0.5" disabled>
+			<h3 id="approximate_cp">CP Prediction</h3>
+			
+			<div class="row" style="padding:1em">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-2">
+					<select class="form-control" disabled id="fast_move_dropdown"></select>
+				</div>
+				<div class="col-sm-2">
+					<select class="form-control" onchange="update_second_charged_move_box()" disabled id="charge_move_dropdown"></select>
+				</div>
+				<div class="col-sm-2">
+					<select class="form-control" disabled id="charge2_move_dropdown" disabled></select>
+				</div>
+			</div>
+		</div>
+		
+		<div>
+			<input type="checkbox" id="secondary_unlocked" name="secondary_unlocked" onchange="update_second_charged_move_box()" disabled>
+			<label for="secondary_unlocked">Unlock Secondary Move</label>
+		</div>
+
+		<div style="padding:1em;">
+			<button type="button" onclick="reset_entry()" class="btn btn-light" id="reset_button" disabled>Reset</button>
+			<button type="button" onclick="add_entry()" class="btn btn-light" id="add_button" disabled>Add To Collection</button>
+			<button type="button" onclick="reset_entry()" class="btn btn-light" id="cancel_edit_button" style="display:none">Cancel</button>
+			<button type="button" onclick="confirm_edit()" class="btn btn-light" id="confirm_edit_button" style="display:none">Save Changes</button>
+		</div>
+
+		<div class="row" style="padding:1em" id="saved_pokemon">
+			<h1></h1>
+		</div>	
+	</div>
+</div>
+
+</body>
+</html>
