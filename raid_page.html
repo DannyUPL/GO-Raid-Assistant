@@ -16,18 +16,18 @@
 
 	<div style="text-align:center;padding-top:2em;padding-bottom:2em;">
 
-		<img id="pokemon_image">
-		<h1 id="pokemon_name"></h1>
-		<h1 id="pokemon_type"></h1>
+		<img id="pokemon_image">  <!--Used to display Raid Boss image-->
+		<h1 id="pokemon_name"></h1>  <!--Used to display Raid Boss name-->
+		<h1 id="pokemon_type"></h1>  <!--Used to display Raid Boss type-->
 		
-		<form autocomplete="off" onsubmit="return activate_search_suggestion()" onfocusout="activate_search_suggestion()">
-		  <div class="autocomplete" style="padding:1em;width:300px;">
+		<form autocomplete="off" onsubmit="return activate_search_suggestion()" onfocusout="activate_search_suggestion()"> <!--Raid Boss name input box-->
+		  <div class="autocomplete" style="padding:1em;width:300px;"> 
 			<input id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Species">
-			<div id="suggestions"></div>
+			<div id="suggestions"></div> <!--Used to display recommended Pokémon-->
 		  </div>
 		</form>
 
-		<div class="row" style="padding:1em" id="recommended_pokemon"></div>	
+		<div class="row" style="padding:1em" id="recommended_pokemon"></div> <!--Used to display recommended counters-->
 	</div>
 </div>
 
