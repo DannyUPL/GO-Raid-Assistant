@@ -1,0 +1,83 @@
+body {
+  font: 16px Arial;
+}
+
+.site-background{
+	background-color: #00475E;
+}
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+h2{
+	text-align: left;
+	height: 50px
+}
+
+.navbar img {
+	align: left;
+}
+.navbar {
+  background-color: #8CC33E;
+  overflow: hidden;
+}
+
+.navbar a {
+  float: right;
+  color: black;
+  font-family: lato regular 400;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.navbar a.active {
+  background-color: #35A747;
+  color: white;
+  text-decoration: underline;
+}
+
+.navbar-header a {
+	font-size: 27px;
+	text-transform: uppercase;
+	font-family: lato regular 400;
+	color: black;
+}
+
+.main-image { 
+	display: inline-block;
+	margin-right: 570px;
+	width: 90px;
+	padding: 90px 570px;
+}
+
+.poke-info {
+	font-size: 30px;
+	text-align: left;
+}
+
+.progress-bar {
+	text-align:center;
+}
+
+.pokemon_infobox {
+	display: flex;
+	justify-content: center;
+}
