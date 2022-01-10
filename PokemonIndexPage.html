@@ -4,55 +4,46 @@
   <title>PokemonDatabase</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="pokemon_collection.js"></script>
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
-
+<body onload="page_init()">
+<!-- Left side of the page.-->
 <div class="container-fluid" style="text-align: center">
   <div class="row">
     <div class="col">
       <h1>collum 1</h1>
-      <div class="container py-1">
-        <div class="btn-group">
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">1</button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Tablet</a>
-              <a class="dropdown-item" href="#">Smartphone</a>
-            </div>
-          </div>
-          <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">2</button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Tablet</a>
-            <a class="dropdown-item" href="#">Smartphone</a>
-          </div>
-        </div>
-        </div>
-        <button type="button" class="btn btn-danger">Add</button>
-      </div>
+      <img id="pokemon_image">
+      <h1 id="pokemon_name"></h1>
+      <h1 id="pokemon_type"></h1>
+      <h3 id="approximate_cp"></h3>
     </div>
-
+<!-- Right side of the page-->
     <div class="col">
       <h1>collum 2</h1>
       <div class="container">
-        <form action="">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="Name" class="form-control" id="type" placeholder="Enter Pokemon Name" name="pokemonType">
+        <form autocomplete="off" onsubmit="return activate_search_suggestion()" onfocusout="activate_search_suggestion()">
+          <div class="autocomplete form-group">
+            <label for="name_input">Pokemon type:</label>
+            <input type="text" class="form-control" id="name_input" placeholder="Enter Pokémon Species" name="name_input">
+            <div id="suggestions"></div>
+          </div>
+          <div class="form-group autocomplete">
+            <label for="nickname_input">Nickname:</label>
+            <input disabled type="text" class="form-control" id="nickname_input" placeholder="Enter Nickname" name="name_input">
           </div>
           <div class="form-group">
             <label for="lvl">Level:</label>
-            <input type="integer" class="form-control" id="lvl" placeholder="Enter Level" name="lvls">
-          </div>
-          <div class="form-group">
-            <label for="aka">Nickname:</label>
-            <input type="name" class="form-control" id="aka" placeholder="Enter its Nickname" name="aka">
-          </div>
-          <div class="form-group form-check">
+            <input type="number" class="form-control" onchange+"update_cp_prediction()" id="level_input" placeholder="Level" name="level_input" min="1" max="50" step="0.5" disabled>
+            <div id="iv_input" style="display:none">
+              <input type="number" id="attack_iv_input" onchange="iv_update()" placeholder="Atk IV" name="level_input" min="0" max="15" step="1">
+              <input type="number" id="defense_iv_input" onchange="iv_update()" placeholder="Def IV" name="level_input" min="0" max="15" step="1">
+              <input type="number" id="stamina_iv_input" onchange="iv_update()" placeholder="Sta IV" name="level_input" min="0" max="15" step="1">
+            </div>
           </div>
         </form>
       </div>
@@ -60,62 +51,49 @@
       <div class="container py-1">
         <div class="btn-group">
           <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Fast Move</button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Tablet</a>
-              <a class="dropdown-item" href="#">Smartphone</a>
-            </div>
+            <select class="btn-primary form-control" disabled id="fast_move_dropdown"></select>
           </div>
           <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Charged Move</button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Tablet</a>
-            <a class="dropdown-item" href="#">Smartphone</a>
+            <select class="btn-primary form-control" onchange="update_second_charged_move_box()" disabled id="charge_move_dropdown"></select>
           </div>
-        </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Charged Move</button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Tablet</a>
-              <a class="dropdown-item" href="#">Smartphone</a>
-            </div>
+            <select class="btn-primary form-control" disabled id="charge2_move_dropdown" disabled></select>
           </div>
         </div>
       </div>
 
       <div class="container py-1">
         <div class="btn-group">
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Attack</button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Tablet</a>
-              <a class="dropdown-item" href="#">Smartphone</a>
-            </div>
+          <div class="btn-group" id="iv_input">
+            <input type="number" id="attack_iv_input" onchange="iv_update()" placeholder="Atk IV" name="level_input" min="0" max="15" step="1">
           </div>
           <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Def</button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Tablet</a>
-            <a class="dropdown-item" href="#">Smartphone</a>
+            <input type="number" id="defense_iv_input" onchange="iv_update()" placeholder="Def IV" name="level_input" min="0" max="15" step="1">
+          </div>
+          <div class="btn-group">
+            <input type="number" id="stamina_iv_input" onchange="iv_update()" placeholder="Sta IV" name="level_input" min="0" max="15" step="1">
           </div>
         </div>
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Stam</button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Tablet</a>
-              <a class="dropdown-item" href="#">Smartphone</a>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-success">Add</button>
+        <button type="button" onclick="add_entry()" class="btn btn-success" id="add_button" disabled>Add</button>
+      </div>
+      <div>
+        <input type="checkbox" id="secondary_unlocked" name="secondary_unlocked" onchange="update_second_charged_move_box()" disabled>
+        <label for="secondary_unlocked">Unlock Secondary Move</label>
+        <input type="checkbox" id="precise_iv_unlocked" name="precise_iv_unlocked" onchange="update_precise_iv_feature()" disabled>
+        <label for="precise_iv_unlocked">Enable Precise IV</label>
       </div>
     </div>
   </div>
 </div>
 <div class="container-fluid">
-  <button type="button" class="btn btn-primary">Primary</button>
-  <button type="button" class="btn btn-primary">Primary</button>
-  <form action="/action_page.php">
+  <div class="btn-group">
+    <button type="button" onclick="reset_entry()" class="btn btn-primary" id="reset_button" disabled>Delete</button>
+    <button type="button" onclick="reset_entry()" class="btn btn-primary" id="cancel_edit_button" style="display:none">Cancel</button>
+    <button type="button" onclick="confirm_edit()" class="btn btn-primary" id="confirm_edit_button" style="display:none">Save Changes</button>
+    <button type="button" onclick="export_json()" class="btn btn-primary" id="export_button">Export JSON</button>
+    <!-- Can we change this to work with button so it can be in the button group-->
+    <button class="btn btn-primary" type='file' onchange="import_json()" style="display:none" id="import_button">Import JSON</button>
+  </div>
     <div class="form-group">
       <label for="usr">Name:</label>
       <input type="text" class="form-control" id="usr" name="username">
@@ -131,6 +109,7 @@
       <a class="dropdown-item" href="#">Link 3</a>
     </div>
   </div>
+  <div class="row" id="saved_pokemon"></div>
 </div>
 </body>
 </html>
