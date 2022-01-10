@@ -68,67 +68,16 @@ h2{
 	padding: 90px 570px;
 }
 
-
-.pokemon-name {
-	width: 325px;
-	position: absolute;
-	left: 945px;
-	top: 165px;
-}
-
-.difficulty {
-	width: 325px;
-	padding-top: 5px;
-	position: absolute;
-	left: 945px;
-	top: 210px;
-}
-
 .poke-info {
 	font-size: 30px;
-	position: absolute;
-	left: 945px;
-	top: 270px;
+	text-align: left;
 }
 
 .progress-bar {
-	position: absolute;
-	left: 190px;
-	top: 255px;
+	text-align:center;
 }
 
-.container-1 {
-	position: absolute;
-	left: 400px;
-	top: 700px;
-}
-
-.container-2 {
-	position: absolute;
-	left: 900px;
-	top: 700px;
-}
-
-.container-3 {
-	position: absolute;
-	left: 1400px;
-	top: 700px;
-}
-
-.container-4 {
-	position: absolute;
-	left: 400px;
-	top: 1100px;
-}
-
-.container-5 {
-	position: absolute;
-	left: 900px;
-	top: 1100px;
-}
-
-.container-6 {
-	position: absolute;
-	left: 1400px;
-	top: 1100px;
+.pokemon_infobox {
+	display: flex;
+	justify-content: center;
 }
