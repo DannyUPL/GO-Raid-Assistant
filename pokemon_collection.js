@@ -143,7 +143,7 @@ function import_json() { //Activated after uploading a file to the "Import JSON"
 }
 
 function update_saved_cookie() { //Activated whenever changes are made to the saved Pokémon list 
-	document.cookie = JSON.stringify(saved_pokemon)+"; path=/"; //Updates the browser cookie to contain the updated data
+	document.cookie = JSON.stringify(saved_pokemon)+"; path=/; expires=Sat, 17 Jan 2032 11:42:03 +0000;"; //Updates the browser cookie to contain the updated data
 }
 
 function update_saved_pokemon_display() { //Used to update the visual display whenever the saved Pokémon list is changed
