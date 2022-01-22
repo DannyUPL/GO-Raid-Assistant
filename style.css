@@ -1,3 +1,5 @@
+@font-face { font-family: menu_font; src: url('menu_font.ttf'); } 
+
 body {
   font: 16px Arial;
 }
@@ -5,13 +7,66 @@ body {
   position: relative;
   display: inline-block;
 }
+
 input {
   border: 1px solid transparent;
   background-color: #f1f1f1;
   padding: 10px;
   font-size: 16px;
 }
+
 input[type=text] {
   background-color: #f1f1f1;
   width: 100%;
+}
+
+h2{
+	text-align: left;
+	height: 50px
+}
+
+.navbar {
+  background-color: #5CB85C;
+  overflow: hidden;
+}
+
+.navbar a {
+  float: right;
+  color: black;
+  font-family: menu_font;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 19px;
+  color: white;
+  -webkit-text-stroke: 1px grey;	
+}
+
+.navbar-item a:hover {
+  background-color: #62C462;
+  color: black;
+  color: white;
+}
+
+.navbar-header:hover {
+  background-color: transparent;
+  color: #999999;
+}
+
+.navbar a.active {
+  background-color: #50A050;
+  color: white;
+  font-family: menu_font;
+  text-decoration: underline;
+  -webkit-text-stroke: 1px black;
+}
+
+.poke-info {
+	font-size: 30px;
+	text-align: left;
+}
+
+.pokemon_infobox {
+	display: flex;
+	justify-content: center;
 }

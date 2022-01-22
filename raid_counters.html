@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Raid View - Go Raid Assistant</title>
+    <meta charset="utf-8"> <!--UTF8 Character set-->
+    <script src="pokemon_raid.js"></script> <!--Raid boss input and counter recommendations-->
+    <link rel="stylesheet" href="style.css"> <!--Custom stylings-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->
+  </head>
+
+<body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This initialises the saved Pokémon storage and activates the search box.-->
+<div class="navbar">
+  <div class="navbar-header">
+	<a href="index.html"><img src="go_logo.png" alt="GO Raid Assistant" width="auto" height="40px" style="  position: absolute;top: 6px;left:6px"></a> <!--Website logo-->
+  </div>
+  <div class="navbar-item">
+	  <a class="active" href="raid_counters.html">Raid View</a> <!--Active Page-->
+	  <a href="pokemon_collection.html">Manage Pokemon Collection</a>
+	  <a href="index.html">Home</a>
+  </div>
+</div>
+
+<div class="container-fluid"> 
+	<div class="container">
+		<div class="row" style="padding-top:2em;">
+			<div class="col-sm-6" style="text-align:center;padding-bottom:2em;">
+				<img href="main" id="pokemon_image" src="unknown_pokemon.png" alt="selected-pokemon" width="350px" height="350px"> <!--Raid boss image-->
+			</div>
+			<div class="col-sm-6" style="text-align:center;padding-bottom:2em;">
+				<div style="padding-bottom:1em;">
+					<form autocomplete="off" onsubmit="return activate_search_suggestion()" onfocusout="activate_search_suggestion()"> <!--Raid Boss name input box-->
+						<input id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Species">
+						<div id="suggestions"></div> <!--Used to display Pokémon search suggestions-->
+					</form>
+				</div>
+				<div> <!--Raid boss details entry-->
+					<div class="row" style="padding-bottom:1em;">
+						<div class="col-sm-4">
+							<h4><b>Raid Difficulty:</b></h4>
+						</div>
+						<div class="col-sm-8">
+							<select class="form-control" onchange="show_pokemon_info_from_entry()" id="raid_difficulty_dropdown"><option>Tier 1</option><option>Tier 3</option><option selected>Tier 5</option></select> <!--Select raid difficulty tier-->
+						</div>
+					</div>
+
+					<div class="row" style="padding-bottom:1em;">
+						<div class="col-sm-2">
+							<h4 style="text-align:right"><b>Fast:</b></h4></span>
+						</div>
+						<div class="col-sm-4">
+							<select class="form-control" onchange="show_pokemon_info_from_entry()" id="fast_move_dropdown" disabled></select> <!--Select boss fast move-->
+						</div>
+						<div class="col-sm-2">
+							<h4 style="text-align:right"><b>Charged:</b></h4>
+						</div>
+						<div class="col-sm-4">
+							<select class="form-control" onchange="show_pokemon_info_from_entry()" id="charged_move_dropdown" disabled></select> <!--Raid boss charged move-->
+						</div>
+					</div>
+				</div>
+				
+				<div class="poke-info"> <!--Raid boss stats-->
+					<div class="row">
+						<div class="col-sm-7">
+							<h1 id="pokemon_name"></h1>  <!--Used to display Raid Boss name-->
+							<h1 id="pokemon_type"></h1>  <!--Used to display Raid Boss type-->
+						</div>
+						<div class="col-sm-4"">
+							<h3 id="pokemon_weaknesses"></h3>  <!--Used to display Raid Boss weaknesses-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div style="text-align:center;padding:2em;">
+				<div class="progress"> <!--Progress bar to show progress through raid, completion set by Javascript code-->
+				  <div class="progress-bar progress-bar-success" role="progressbar" id="progress_bar" style="width: 0%"></div>
+				</div>
+			</div>
+		</div>
+
+		<h1 style="text-align:center;font-size:3em; display:none; font-weight: bold;" id="team_name">Recommended Team</h1> <!--Header made visible by Javascript-->
+		<h2 style="text-align:center;font-size:2em; padding-bottom:1em;" id="bonus_text"></h2> <!--Used for extra description of raid progress-->
+
+		<div id="recommended_pokemon"></div> <!--Used to show the grid of recommended raid counters-->
+
+	</div>
+</div>

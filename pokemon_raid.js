@@ -23,20 +23,161 @@ function page_init() { //Triggered on page load
 	saved_pokemon=json_data; //Set the saved Pokémon list to be the parsed cookie data
 }
 
-function show_pokemon_info(id_num) { //Used to display a Pokémon species info in the entry screen
-	document.getElementById("pokemon_image").src=pokemon_info[id_num]["Image"]; //Set the image
-	document.getElementById("pokemon_name").innerHTML="<b>"+pokemon_info[id_num]["Name"]+" #"+pokemon_info[id_num]["National Dex No"]+"</b>"; //Display the species name and National Dex Number
-	document.getElementById("pokemon_type").innerHTML="Type: "+pokemon_info[id_num]["Type"].replace("#","/"); //Display the species type
-	document.getElementById('recommended_pokemon').innerHTML='Please wait...'; //Loading
-	var text_to_show=""; //Init recommendations as blank
+function simulate_complete_battle(user_pokemon,foe_hp,timer) { //Used to simulate an entire continuous battle with six Pokémon. The simulation ends when time runs out, the foe faints or the user's entire team is knocked out.
+	var user_attacking_turns=0; //A Pokémon cannot execute another attack until its current attack is finished 
+	var foe_attacking_turns=0;
+	var foe_energy=0; //Init energy as 0
+	var user_energy=0;
+		
+	tdo=[0,0,0,0,0,0]; //Init array of individual Pokémon total damage output 
+	survivability=[0,0,0,0,0,0]; //Init array of individual Pokémon total survivability 
+	var index=0;
+	
+	var time_survived_by_poke=0 //Init current Pokémon survival 
+	var damage_dealt_by_poke=0 //Init current Pokémon damage 
+	
+	while (foe_hp>0 && timer>0 && user_pokemon.length>0) { //While the battle is ongoing (time hasn't run out, user still has Pokémon and foe isn't fainted)
+		if (foe_attacking_turns > 0) { //If the foe is busy attacking 
+			foe_attacking_turns-=0.1; //Reduce the amount of time left attacking 
+		}
+		else if (foe_energy>user_pokemon[0]['foe_charged_energy_requirement']) { //If the Pokémon has enough energy to activate their charged attack
+			user_pokemon[0]['user_stamina'] -= user_pokemon[0]['foe_charged_move_damage']; //Reduce user's HP by attack damage
+			foe_attacking_turns=5; //Set move cooldown
+			foe_energy-=user_pokemon[0]['foe_charged_energy_requirement']; //Reduce Pokémon energy by the charged energy requirement
+			user_energy+=(user_pokemon[0]['foe_charged_damage']*0.5); //Increase user energy by half the damage of the boss Pokémon's attack
+		}
+		else {
+			user_pokemon[0]['user_stamina'] -= user_pokemon[0]['foe_fast_move_damage']; //Decrease user HP by attack damage
+			foe_energy += user_pokemon[0]['foe_fast_energy_output']; //Increase foe energy
+			foe_attacking_turns=5; //Set move cooldown
+			user_energy += (user_pokemon[0]['foe_fast_move_damage']*0.5); //Increase user energy by half the damage of the boss Pokémon's attacks
+		}
+		
+		if (user_attacking_turns > 0) { //If the user is busy attacking 
+			user_attacking_turns-=0.1; //Reduce the amount of time left attacking 
+		}
+		else if (user_energy>user_pokemon[0]['charged_energy_requirement']) { //If the Pokémon has enough energy to activate their charged attack
+			user_attacking_turns=user_pokemon[0]['charged_move_duration']; //Set Pokémon attacking turns to this move's duration
+			foe_hp -= user_pokemon[0]['charged_move_damage']; //Reduce foe HP by the Pokémon's attack damage
+			user_energy -= user_pokemon[0]['charged_energy_requirement']; //Reduce Pokémon energy by the charged energy requirement
+			foe_energy += (user_pokemon[0]['charged_move_damage'])*0.5; //Increase the foe energy by half the damage of the Pokémon's attack
+			damage_dealt_by_poke+=user_pokemon[0]['charged_move_damage'] //Increase this Pokémon's recorded damage output
+		}
+		else {
+			user_attacking_turns = user_pokemon[0]['fast_move_duration']; //Set move cooldown
+			foe_hp -= user_pokemon[0]['fast_move_damage']; //Decrease foe HP by the user's attack damage
+			user_energy += user_pokemon[0]['fast_energy_output']; //Increase the user's energy
+			foe_energy += (user_pokemon[0]['fast_move_damage']*0.5); //Increase the foe's energy by half the damage of the Pokémon's attack
+			damage_dealt_by_poke+=user_pokemon[0]['fast_move_damage'] //Increase this Pokémon's recorded damage output
+		}
+		timer -=0.1; //Reduce the timer 
+		time_survived_by_poke +=0.1; //Increase the number of time survived by this Pokémon
+		if (user_pokemon[0]['user_stamina']<=0) { //If the user's Pokémon has fainted
+			user_attacking_turns+=2; //Attack cooldown from death 
+			user_pokemon.shift(); //Remove this Pokémon from the team and switch to the next one 
+			user_energy=0; //Reset user energy to 0 
+			survivability[index]=time_survived_by_poke; //Record the time survived by this Pokémon 
+			tdo[index]=damage_dealt_by_poke; //Record the total damage output of this Pokémon 
+			index+=1; //Increase the team index by 1
+			time_survived_by_poke=0 //Reset the survived time for this Pokémon 
+			damage_dealt_by_poke=0 //Reset the total damage output for this Pokémon
+		}
+	}
+	return([foe_hp,timer,tdo,survivability]); //Return final outcome
+}
 
+function simulate_pokemon_battle(user_stamina,user_fast_damage,user_fast_duration,user_charge_damage,user_charged_duration,user_energy_req,user_energy_rate,foe_fast_damage,foe_charge_damage,foe_energy_req,foe_energy_rate) { //Simulates a battle with a single Pokémon
+
+	var turns=0; //Init battle length as 0 
+	var user_energy=0; //Init user energy as 0 
+	var user_attacking_turns=0; //Init user move cooldown as 0 
+	
+	var foe_damage_dealt=0 //Init foe damage dealt as 0 
+	var foe_energy=0; //Init foe energy as 0 
+	var foe_attacking_turns=0; //Init foe move cooldown as 0 
+	
+	while (user_stamina>0) { //While the user Pokémon has not fainted
+		if (foe_attacking_turns > 0) { //If the foe is still attacking 
+			foe_attacking_turns-=0.1; //Reduce cooldown 
+		}
+		else if (foe_energy>foe_energy_req) { //If the foe has enough energy to execute an attack 
+			user_stamina -= foe_charge_damage; //Reduce the user's HP by the foe's attack damage
+			foe_attacking_turns=5; //Set foe cooldown 
+			foe_energy-=foe_energy_req; //Consume foe energy
+			user_energy += (foe_charge_damage*0.5);
+		}
+		else {
+			user_stamina -= foe_fast_damage; //Reduce the user's HP by the foe's fast attack damage 
+			foe_energy += foe_energy_rate; //Increase foe energy 
+			foe_attacking_turns=5; //Set foe cooldown 
+			user_energy += (foe_fast_damage*0.5);
+		}
+		
+		if (user_attacking_turns > 0) { //If the user is still attacking 
+			user_attacking_turns-=0.1; //Reduce cooldown 
+		}
+		else if (user_energy>user_energy_req) { //If the user has enough energy to execute a charged attack 
+			user_attacking_turns=user_charged_duration; //Set move cooldown 
+			foe_damage_dealt +=user_charge_damage; //Increase damage dealt to foe by attack damage 
+			user_energy -= user_energy_req; //Consume user energy 
+			foe_energy += (user_charge_damage)*0.5; //Increase foe energy 
+		}
+		else { 
+			user_attacking_turns = user_fast_duration; //Set fast move cooldown 
+			foe_damage_dealt += user_fast_damage; //Increase damage dealt to foe by attack damage 
+			user_energy += user_energy_rate; //Increase user energy 
+			foe_energy += (user_fast_damage*0.5); //Increase foe energy 
+		}
+		turns +=0.1; //Increase the number of turns that have passed 
+	}
+	
+	turns += user_attacking_turns; //Complete cooldown for current move 
+	turns += 2; //Add additional cooldown for user switching Pokémon 
+	
+	var outcome={"dps":(foe_damage_dealt/turns),"surv":turns,"tdo":foe_damage_dealt} //Values to return 
+	return(outcome)
+	
+}
+
+function show_pokemon_info(id_num) { //Used to display Pokémon recommendations
+	document.getElementById('recommended_pokemon').innerHTML='Please wait...'; //Loading
+
+	if (document.getElementById("pokemon_image").src!=pokemon_info[id_num]["Image"]) { //If not currently showing this Pokémon's data
+		document.getElementById("pokemon_image").src=pokemon_info[id_num]["Image"]; //Set the image
+		document.getElementById("pokemon_name").innerHTML="<b>"+pokemon_info[id_num]["Name"]+" #"+pokemon_info[id_num]["National Dex No"]+"</b>"; //Display the species name and National Dex Number
+		document.getElementById("pokemon_type").innerHTML="Type: "+pokemon_info[id_num]["Type"].replace("#","/"); //Display the species type
+		document.getElementById("pokemon_weaknesses").innerHTML="<b>Weakness</b><br>"+find_all_weaknesses(pokemon_info[id_num]["Name"]); //Display the species weaknesses
+
+		var pokemon_moves=pokemon_info[id_num]["Fast Moves"].split("#"); //Split the Fast Moves into an array
+		var move_options=""; //Init list of move options as an empty string
+		for (const element of pokemon_moves) { //Loop through each move the Pokémon can learn in this category
+			move_options+="<option>"+element+"</option>"; //Add the HTML for the move to the move_options string
+		}
+		document.getElementById('fast_move_dropdown').innerHTML=move_options;
+
+		var pokemon_moves=pokemon_info[id_num]["Charge Moves"].split("#"); //Split the Charged Moves into an array
+		var move_options=""; //Init list of move options as an empty string
+		for (const element of pokemon_moves) { //Loop through each move the Pokémon can learn in this category
+			move_options+="<option>"+element+"</option>"; //Add the HTML for the move to the move_options string
+		}
+		document.getElementById('charged_move_dropdown').innerHTML=move_options;
+
+		document.getElementById('fast_move_dropdown').disabled=false;
+		document.getElementById('charged_move_dropdown').disabled=false;
+
+	}
+	
+	var text_to_show=""; //Init recommendations as blank
 	var foe_defense=(Number(pokemon_info[id_num]["Defense"])+15)*0.7903; //Calculate Raid Boss defense stat
 	var foe_types=pokemon_info[id_num]["Type"].split("#"); //Get Raid Boss typing
+	var foe_attack=(Number(pokemon_info[id_num]["Attack"])+15)*0.7903; //Calculate Raid Boss attack stat
 	
 	saved_pokemon.forEach(function (item, index) { //Loop through each Pokémon in the user's collection
 
 		var id_num = pokemon_names_cased.indexOf(item["species"]); //Gets the ID number of the species by finding its position in the names list
-		var user_attack=(Number(pokemon_info[id_num]["Attack"]))*cp_multipliers[item["level"]];
+		var user_attack=(Number(pokemon_info[id_num]["Attack"])+Number(item["attack_iv"]))*cp_multipliers[item["level"]];
+		var user_stamina=(Number(pokemon_info[id_num]["Stamina"])+Number(item["defense_iv"]))*cp_multipliers[item["level"]];
+		var user_defense=(Number(pokemon_info[id_num]["Stamina"])+Number(item["stamina_iv"]))*cp_multipliers[item["level"]];
 		var pokemon_types=pokemon_info[id_num]["Type"].split("#"); //Get user Pokémon typing 
 
 		var fast_move_duration=Number(fast_move_info[item["fast_move"]]["Duration"]); //Get the duration of the user's fast move
@@ -58,21 +199,29 @@ function show_pokemon_info(id_num) { //Used to display a Pokémon species info i
 			var sec_charged_move_type=charge_move_info[item["charge_move2"]]["Type"]; //Get the user's secondary charged move's type 
 			var sec_charged_move_damage=calculate_move_damage(pokemon_types,sec_charged_move_type,sec_charged_move_power,foe_types,user_attack,foe_defense) //Use the calculate_move_damage function to calculate the damage dealt by using the user's secondary charged attack against the foe 
 		}
-		
-		var t = (charged_energy_requirement/fast_energy_output)*fast_move_duration; //Calculate how long it'll take to reach enough energy to execute the user's charged attack 
-		var d = (charged_energy_requirement/fast_energy_output)*fast_move_damage; //Calculate how much damage will be dealt by the user's fast moves during that time 
-		d += charged_move_damage; //Add on the charged attack damage 
-		t += charged_move_duration; //Add on the charged attack duration 
-		var DPS = d/t; //Damage per second is damage dealt divided by time taken 
 
+		//FOE MOVES
+		opponent_move1=document.getElementById('fast_move_dropdown').value;
+		opponent_move2=document.getElementById('charged_move_dropdown').value;
+
+		var foe_fast_move_duration=Number(fast_move_info[opponent_move1]["Duration"]); //Get the duration of the user's fast move
+		var foe_fast_energy_output=Number(fast_move_info[opponent_move1]["Energy Generated"]); //Get the amount of energy generated by each execution of the user's fast move 
+		var foe_fast_move_power=Number(fast_move_info[opponent_move1]["Power"]); //Get the user's fast move's base power
+		var foe_fast_move_type=fast_move_info[opponent_move1]["Type"]; //Get the user's fast move's type
+		var foe_charged_energy_requirement=Number(charge_move_info[opponent_move2]["Energy Required"]); //Get the energy required to execute the user's charged attack
+		var foe_charged_move_power=Number(charge_move_info[opponent_move2]["Power"]); //Get the user's charged move's base power 
+		var foe_charged_move_duration=Number(charge_move_info[opponent_move2]["Duration"]); //Get the duration of the user's charged move
+		var foe_charged_move_type=charge_move_info[opponent_move2]["Type"]; //Get the user's charged move's type 
+
+		var foe_fast_move_damage=calculate_move_damage(foe_types,foe_fast_move_type,foe_fast_move_power,pokemon_types,foe_attack,user_defense); //Uses the calculate_move_damage function to calculate the damage dealt by using the user's fast attack against the foe
+		var foe_charged_move_damage=calculate_move_damage(foe_types,foe_charged_move_type,foe_charged_move_power,pokemon_types,foe_attack,user_defense); //Uses the calculate_move_damage function to calculate the damage dealt by using the user's charged attack against the foe
+		
+		//BATTLE SIM 
+		var outcome=simulate_pokemon_battle(user_stamina,fast_move_damage,fast_move_duration,charged_move_damage,charged_move_duration,charged_energy_requirement,fast_energy_output,foe_fast_move_damage,foe_charged_move_damage,foe_charged_energy_requirement,foe_fast_energy_output);
 		if (item["charge_move2"]!="") { //If the user's Pokémon has a secondary charged move, separately calculate the DPS for if they were using the secondary charged move instead of the primary one 
-			var sec_t = (sec_charged_energy_requirement/fast_energy_output)*fast_move_duration; //Calculate how long it'll take to reach enough energy to execute the user's secondary charged attack 
-			var sec_d = (sec_charged_energy_requirement/fast_energy_output)*fast_move_damage; //Calculate how much damage will be dealt by the user's fast moves during that time 
-			sec_d += sec_charged_move_damage; //Add on the secondary charged attack damage 
-			sec_t += sec_charged_move_duration; //Add on the secondary charged attack duration 
-			var sec_DPS = sec_d/sec_t; //Calculate DPS by dividing damage dealt by time taken 
-			if (sec_DPS>DPS) { //If it's more effective to use your secondary attack over your primary attack 
-				var DPS = sec_DPS; //Set the Pokémon's DPS to this value instead 
+			var sec_outcome=simulate_pokemon_battle(user_stamina,fast_move_damage,fast_move_duration,sec_charged_move_damage,sec_charged_move_duration,sec_charged_energy_requirement,fast_energy_output,foe_fast_move_damage,foe_charged_move_damage,foe_charged_energy_requirement,foe_fast_energy_output);
+			if (sec_outcome["dps"]>outcome["dps"]) { //If it's more effective to use your secondary attack over your primary attack 
+				outcome=sec_outcome; //Change the outcome to be that of the secondary move 
 				item["use_secondary"]=true; //Mark this Pokémon as worth using secondary over primary 
 			}
 		}
@@ -81,21 +230,118 @@ function show_pokemon_info(id_num) { //Used to display a Pokémon species info i
 			d=d*1.2; //Multiply damage output by 1.2x
 		}
 		
-		item["score"]=DPS; //Assign a "score" value to the Pokémon referring to its DPS, so we can sort each Pokémon by its score to find the best choices 
+		item["fast_damage"]=fast_move_damage; //Store these values so they can be reused for the final simulation  
+		item["user_stamina"]=user_stamina;
+		item["fast_move_damage"]=fast_move_damage;
+		item["fast_move_duration"]=fast_move_duration;
+		item["charged_move_damage"]=charged_move_damage;
+		item["charged_move_duration"]=charged_move_duration;
+		item["charged_energy_requirement"]=charged_energy_requirement;
+		item["fast_energy_output"]=fast_energy_output;
+		item["foe_fast_move_damage"]=foe_fast_move_damage;
+		item["foe_charged_move_damage"]=foe_charged_move_damage;
+		item["foe_charged_energy_requirement"]=foe_charged_energy_requirement;
+		item["foe_fast_energy_output"]=foe_fast_energy_output;
+		item["survivability"]=outcome["surv"];
+		item["tdo"]=outcome["tdo"];		
+		item["score"]=outcome["dps"]; //Assign a "score" value to the Pokémon referring to its DPS, so we can sort each Pokémon by its score to find the best choices 
 	})
 
 	saved_pokemon.sort((a, b) => (a.score < b.score) ? 1 : -1); //Sort each Pokémon by its damage per second 
+	
+	var total_health={"Tier 5":15000,"Tier 3":3600,"Tier 1":600}[document.getElementById("raid_difficulty_dropdown").value]; //Get total health for Raid Boss 
+	var timer_duration={"Tier 5":300,"Tier 3":180,"Tier 1":180}[document.getElementById("raid_difficulty_dropdown").value]; //Get timer duration for battle 
+	var timer=timer_duration; 
+	var outcome = simulate_complete_battle(saved_pokemon.slice(0,6),total_health,timer); //Simulate the final battle using all six recommended Pokémon
+	var final_boss_health=outcome[0];
+	var final_timer=outcome[1];
+	var total_time_taken=timer_duration-final_timer;
+	var total_damage_dealt=total_health-final_boss_health;
 
-	saved_pokemon.forEach(function (item, index) { //For each Pokémon in the newly sorted list 
-		if (item["use_secondary"]==true) { //If the secondary move was marked as more effective 
-			text_to_show+=item["species"]+" "+item["score"].toString()+" Damage Per Second (using "+item["charge_move2"]+")<br>"; //Show the Pokémon, highlighting the secondary move to use
+	if (final_boss_health<0){  //If the boss has been defeated
+		document.getElementById('bonus_text').innerHTML="This team will win in "+Math.floor(total_time_taken)+" seconds."
+	}
+	else if (final_timer<=0) { //If the timer has run out
+		document.getElementById('bonus_text').innerHTML="This team will deal "+Math.floor((total_damage_dealt/total_health)*100).toString()+"% of the damage required before running out of time."	
+	}
+	else { //If the user's team faints before running out of time or defeating the boss
+		document.getElementById('bonus_text').innerHTML="This team will deal "+Math.floor((total_damage_dealt/total_health)*100).toString()+"% of the damage required before fainting in "+Math.floor(total_time_taken)+" seconds."	
+	}
+
+	saved_pokemon.forEach(function (item, index) { //For each Pokémon in the DPS sorted list 
+		if (index<6) { //Only for the first six Pokémon 
+			var display_name=item["nickname"]; //Use the Pokémon's nickname in the display 
+			if (display_name=="") { //If the Pokémon doesn't have a nickname 
+				display_name=item["species"]; //Use its species name 
+			}
+			if (item['use_secondary']==true) { //If the Pokémon's secondary attack is more effective than it's primary attack 
+				var move_text=item["fast_move"]+" & "+item["charge_move2"] //Display the secondary attack's name 
+			}
+			else { //Otherwise 
+				var move_text=item["fast_move"]+" & "+item["charge_move"] //Display the primary attack's name 
+			}
+			strength=(index+1).toString(); //Display position ranking 
+			damage_dealt=outcome[2][index];
+			time_taken=outcome[3][index];
+			dps=damage_dealt/time_taken;
+			text_to_show+='<div class="col-sm-4 pokemon_infobox"><div><img src='+pokemon_info[pokemon_names_cased.indexOf(item["species"])]["Image"]+' width="150px" height="150px"><h4><b>#'+strength+' '+display_name+' Lv.'+(item["level"].toString())+'</b></h4><h4>'+calculate_cp(item)+'</h4><h4>'+move_text+'</h4><h4 style=opacity:0.5;>'+(dps.toFixed(2).toString())+'d/s '+damage_dealt+'d '+(time_taken.toFixed(1).toString())+'s<br>'+item["fast_damage"]+'f '+item["charged_move_damage"]+'c</h4></div></div>'; //Add all information about this Pokémon to the text to be shown
 		}
-		else { //If the primary move was more effective 
-			text_to_show+=item["species"]+" "+item["score"].toString()+" Damage Per Second (using "+item["charge_move"]+")<br>"; //Show the Pokémon, highlighting the primary move to use
-		}	
 	})
 
-	document.getElementById('recommended_pokemon').innerHTML='<h1>'+text_to_show+'</h1>'; //Show the new list of sorted Pokémon 
+	document.getElementById('team_name').style.display="block"; //Make the "Recommended Team" text visible 
+	document.getElementById('progress_bar').style.width=(((total_damage_dealt/total_health)*100).toString())+"%"; //Update the progress bar 
+	document.getElementById('recommended_pokemon').innerHTML='<h1>'+text_to_show+'</h1>'; //Show the new list of recommended Pokémon 
+}
+
+function find_all_weaknesses(pokemon_species) { //Used to find all of a Pokémon's weaknesses. This is displayed after entering a boss's name.
+	var stats=pokemon_info[pokemon_names_cased.indexOf(pokemon_species)]; //Obtain the species stats 
+	var typing=stats["Type"].split("#"); //Split the species types into a list
+	weaknesses={} //Init empty weakness dictionary 
+
+	for (var move_type in type_advantage) { //Loop through each type of move that could be used against this Pokémon
+
+		var type_effectiveness=1; //Initialise type effectiveness as 1, i.e. no multiplier
+		typing.forEach(function (item, index) { //Loop through each of the foe Pokémon's types (each Pokémon has either 1 or 2 types)
+			type_effectiveness*=Number(type_advantage[move_type][item]); //Apply the type effectiveness multiplier for using the chosen attack's type against a Pokémon of this type 
+		}) //For example, Charizard is Flying and Fire. Rock-type moves deal 1.4x damage to Fire-types and deal 1.4x damage to Flying-types. Thus, by multiplying the multipliers, i.e. 1.4*1.4=1.96, as Charizard is both of these types, Rock-type moves deal 4x damage to Charizard. On the other hand, Water-type moves deal 1.4x damage to Fire-types and 1x damage to Flying-types, so a Water-type move used against Charizard would deal 1.4x damage (1.4*1=1.4). This is Pokémon's famous "type effectiveness" system that encourages you to use different Pokémon depending on the foe.
+		if (type_effectiveness>1) { //If the type would have increased damage against the foe Pokémon 
+			weaknesses[move_type]=type_effectiveness; //Add it to the weakness dictionary 
+		}
+	}
+	
+	output_text="" //Init output text as empty
+	for (var move_type in weaknesses) { //For each of the weaknesses assigned to the dictionary
+		output_text+=move_type+" "+weaknesses[move_type].toString().slice(0, 3)+"x<br>" //Add each weakness to the output text
+	}
+	return(output_text); //Return final text string of weaknesses
+}
+
+function calculate_cp(pokemon) { //Used to calculate a prediction of what the Pokémon's Combat Power is. Combat Power is a basic judgement score that uses the Pokémon's stats to assess how strong it is.
+	
+	var id_num = pokemon_names_cased.indexOf(pokemon["species"]) //Get the ID number by locating the name in the list of Pokémon names
+	var CPMultiplier=cp_multipliers[pokemon["level"]]; //Get the CP multiplier by using the level with the CP multiplier dictionary
+
+	if (pokemon["attack_iv"]=="" | pokemon["defense_iv"]=="" | pokemon["stamina_iv"].value=="") { //If you have not typed in precise IV
+
+		var AttackStat=Number(pokemon_info[id_num]["Attack"])+0; //Use a minimum IV of 0 with the base species stats
+		var DefenseStat=Number(pokemon_info[id_num]["Defense"])+0;
+		var StaminaStat=Number(pokemon_info[id_num]["Stamina"])+0;
+		var minimum_prediction=Math.floor(((AttackStat) * ((DefenseStat)**0.5) * ((StaminaStat)**0.5) * (CPMultiplier**2)) / 10); //Use the Pokémon GO combat power formula
+
+		AttackStat=Number(pokemon_info[id_num]["Attack"])+15; //Use a maximum IV of 15 with the base species stats
+		DefenseStat=Number(pokemon_info[id_num]["Defense"])+15;
+		StaminaStat=Number(pokemon_info[id_num]["Stamina"])+15;
+		var maximum_prediction=Math.floor(((AttackStat) * ((DefenseStat)**0.5) * ((StaminaStat)**0.5) * (CPMultiplier**2)) / 10);  //Use the Pokémon GO combat power formula
+
+		return(minimum_prediction.toString()+"CP - "+maximum_prediction.toString()+'CP')
+	}
+	else { //If you have typed in precise IVs
+		var AttackStat=Number(pokemon_info[id_num]["Attack"])+Number(pokemon["attack_iv"]); //Use the base stats in combination with the precise IVs
+		var DefenseStat=Number(pokemon_info[id_num]["Defense"])+Number(pokemon["defense_iv"]);
+		var StaminaStat=Number(pokemon_info[id_num]["Stamina"])+Number(pokemon["stamina_iv"]);
+		var combat_power=Math.floor(((AttackStat) * ((DefenseStat)**0.5) * ((StaminaStat)**0.5) * (CPMultiplier**2)) / 10); //Use the Pokémon GO combat power formula
+		return(combat_power.toString()+'CP')
+	}
 }
 
 function calculate_move_damage(pokemon_types,move_type,move_power,foe_types,user_attack,foe_defense) { //Calculates how much damage a move will deal. Requires the user Pokémon's typing, the typing of the move, the move's base power, the foe Pokémon's typing, the user Pokémon's attack stat and the foe Pokémon's defense stat.
@@ -115,6 +361,7 @@ function calculate_move_damage(pokemon_types,move_type,move_power,foe_types,user
 
 function show_pokemon_info_from_entry() { //Reads the entered Pokémon name and updates the display to use this Pokémon's information
 	var entry = document.getElementById("name_input").value.toUpperCase(); //Get the user input and convert to all uppercase
+
 	try {
 		var id_num = pokemon_names.indexOf(entry); //Find the entry in the list 
 		show_pokemon_info(id_num); //Use the show Pokémon info function with the index of the entered Pokémon's information
