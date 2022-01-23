@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pokémon Test</title>
+    <meta charset="utf-8"> <!--UTF8 Character set-->
+    <script src="pokemon_info.js"></script> <!--This sets the Pokémon info-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->
+	<link rel="stylesheet" href="PCPstyles2.css"> <!--Custom Stylings-->
+  </head>
+  
+  <body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This selects and displays the info for a random Pokémon among other tasks-->
+	<div class="site-background">
+	<div class="navbar">
+	
+  <div class="navbar-header">
+  <img href="logo" src="pokeball.png" alt="pokeball" width="50px" height="50px">
+  <a class="navbar-brand" href="index.html">GO! Raid Assistant</a>
+  </div>
+  
+  <a href="RBP.html">Raid Boss</a> <!--Raid Boss page button-->
+  <a class="active" href="#PCP">Pokemon Collection</a> <!--Current Page-->
+  <a href="index.html">Home</a> <!-- Home button-->
+  
+</div>
+</div>
+
+<div class="pokemon-image">
+	<img class="poke-holder" href="main" src="pokeholder.png" alt="selected-pokemon" width="300px" height="300px"> <!-- Main Image of the page-->
+</div>
+<div class="name">
+	<input style="font-size:40px;" type="text" placeholder="Name"> <!-- input name-->
+</div>
+<div class="level">
+	<input style="font-size:30px;" type="text" placeholder="Level" background="#99DEE6"> <!-- input level-->
+</div>
+
+<div class="nickname">
+	<input style="font-size:30px;" type="text" placeholder="nickname" background="#99DEE6"> <!-- input nickname-->
+</div>
+
+<button class="button button1">Add</button>
+<button class="button button2">Delete</button>
+<button class="button button3"></button>
+<button class="button button4"></button>
+<button class="button button5"></button>
+<button class="button button6"></button>
+<div class="fast-move">
+	<input style="font-size: 10px;" type="text" placeholder="Fast Move">
+</div>
+
+<div class="charged-move">
+	<input style="font-size: 8px;" type="text" placeholder="Charged Move">
+</div>
+
+<div class="charged-move2">
+	<input style="font-size: 8px;" type="text" placeholder="2nd Charge Move">
+</div>
+
+<div class="ATK">
+	<input style="font-size: 15x;" type="text" placeholder="ATK">
+</div>
+
+<div class="DEF">
+	<input style="font-size: 15px;" type="text" placeholder="DEF">
+</div>
+
+<div class="stamina">
+	<input style="font-size: 15px;" type="text" placeholder="STA">
+</div>
+
+<div class="calculate">
+	<h3>?<h3>
+
+
+<div class="background">
+<img class="background" href="background" src="background.png" alt="background">
+</div>
+
+  </body>
+  </html>
