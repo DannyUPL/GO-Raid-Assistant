@@ -1,20 +1,20 @@
-@font-face { font-family: menu_font; src: url('menu_font.ttf'); } 
-
 body {
   font: 16px Arial;
+}
+
+.site-background{
+	background-color: #00475E;
 }
 .autocomplete {
   position: relative;
   display: inline-block;
 }
-
 input {
   border: 1px solid transparent;
   background-color: #f1f1f1;
   padding: 10px;
   font-size: 16px;
 }
-
 input[type=text] {
   background-color: #f1f1f1;
   width: 100%;
@@ -25,48 +25,110 @@ h2{
 	height: 50px
 }
 
+.navbar img {
+	align: left;
+}
 .navbar {
-  background-color: #5CB85C;
+  background-color: #8CC33E;
   overflow: hidden;
 }
 
 .navbar a {
   float: right;
   color: black;
-  font-family: menu_font;
+  font-family: lato regular 400;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 19px;
-  color: white;
-  -webkit-text-stroke: 1px grey;	
+  font-size: 17px;
 }
 
-.navbar-item a:hover {
-  background-color: #62C462;
+.navbar a:hover {
+  background-color: #ddd;
   color: black;
-  color: white;
-}
-
-.navbar-header:hover {
-  background-color: transparent;
-  color: #999999;
 }
 
 .navbar a.active {
-  background-color: #50A050;
+  background-color: #35A747;
   color: white;
-  font-family: menu_font;
   text-decoration: underline;
-  -webkit-text-stroke: 1px black;
+}
+
+.navbar-header a {
+	font-size: 27px;
+	text-transform: uppercase;
+	font-family: lato regular 400;
+	color: black;
+}
+
+.main-image { 
+	display: inline-block;
+	margin-right: 570px;
+	width: 90px;
+	padding: 90px 570px;
+}
+
+
+.pokemon-name {
+	width: 325px;
+	position: absolute;
+	left: 945px;
+	top: 165px;
+}
+
+.difficulty {
+	width: 325px;
+	padding-top: 5px;
+	position: absolute;
+	left: 945px;
+	top: 210px;
 }
 
 .poke-info {
 	font-size: 30px;
-	text-align: left;
+	position: absolute;
+	left: 945px;
+	top: 270px;
 }
 
-.pokemon_infobox {
-	display: flex;
-	justify-content: center;
+.progress-bar {
+	position: absolute;
+	left: 190px;
+	top: 255px;
+}
+
+.container-1 {
+	position: absolute;
+	left: 400px;
+	top: 700px;
+}
+
+.container-2 {
+	position: absolute;
+	left: 900px;
+	top: 700px;
+}
+
+.container-3 {
+	position: absolute;
+	left: 1400px;
+	top: 700px;
+}
+
+.container-4 {
+	position: absolute;
+	left: 400px;
+	top: 1100px;
+}
+
+.container-5 {
+	position: absolute;
+	left: 900px;
+	top: 1100px;
+}
+
+.container-6 {
+	position: absolute;
+	left: 1400px;
+	top: 1100px;
 }
