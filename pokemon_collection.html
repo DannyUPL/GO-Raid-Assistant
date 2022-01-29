@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pokémon Test</title>
+    <meta charset="utf-8"> <!--UTF8 Character set-->
+    <script src="pokemon_collection.js"></script> <!--This sets the Pokémon info-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->	
+	<link rel="stylesheet" href="style.css"> <!--Custom Stylings-->
+  </head>
+  
+<body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This initialises the saved Pokémon storage and activates the search box.-->
+<div class="navbar" style="margin-bottom:2vw;">
+  <div class="navbar-header">
+	<a href="index.html"><img src="go_logo.png" alt="GO Raid Assistant" width="auto" height="40px" style="  position: absolute;top: 6px;left:6px"></a> <!--Website logo-->
+  </div>
+  <div class="navbar-item">
+	  <a href="raid_counters.html">Raid View</a>
+	  <a class="active" href="pokemon_collection.html">Manage Pokemon Collection</a>  <!--Active Page-->
+	  <a href="index.html">Home</a>
+  </div>
+</div>
+
+
+<div style="text-align;center;">
+	<div style="width:1100px;margin:auto;">
+		<img class="background" href="background" src="background.png" alt="background"></img>
+		<div class="pokemon-image">
+			<img class="poke-holder" id='pokemon_image' href="main" src="unknown_pokemon.png" alt="selected-pokemon" width="100%"> <!-- Main Image of the page-->
+		</div>
+		<div class="name">
+			<input style="font-size:30px;" id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Species..."> <!-- Enter species name-->
+			<div id="suggestions" style="position:absolute;z-index:1;width:100%"></div>
+		</div>
+		<div class="level">
+			<input style="font-size:30px;" disabled id="nickname_input" type="text" name="name_input" placeholder="Nickname">  <!--Enter nickname-->
+		</div>
+		<div class="nickname">
+			<input style="font-size:30px;" disabled type="number" id="level_input" onchange="update_cp_prediction()" placeholder="Level" name="level_input" min="1" max="50" step="0.5"> <!--Enter level-->
+		</div>
+		<div class="fast-move">
+			<select style="font-size:15px;" disabled class="form-control" id="fast_move_dropdown"></select> <!--Fast move dropdown options provided by Javascript-->
+		</div>
+		<div class="charged-move">
+			<select style="font-size:15px;" disabled class="form-control" onchange="update_second_charged_move_box()" disabled id="charge_move_dropdown"></select> <!--Charged move dropdown options provided by Javascript-->
+		</div>
+
+		<div class="sec_label">
+			<input type="checkbox" disabled id="secondary_unlocked" name="secondary_unlocked" onchange="update_second_charged_move_box()"> <!--Toggle dropdown box for secondary charged move-->
+			<label for="secondary_unlocked" style="color:white;font-size:15px;">Second Move Unlocked</label>
+		</div>
+		<div class="charged-move2">
+			<select style="font-size:15px;" disabled class="form-control" disabled id="charge2_move_dropdown" disabled></select> <!--Secondary charged move dropdown options provided by Javascript-->
+		</div>
+
+		<div class="iv_label">
+			<input type="checkbox" disabled id="precise_iv_unlocked" name="precise_iv_unlocked" onchange="update_precise_iv_feature()"> <!--Toggle IV input section-->
+			<label for="precise_iv_unlocked" style="color:white;font-size:15px;">Enable Precise IV</label>
+		</div>
+
+		<div id="iv_input">
+			<div class="ATK">
+				<input style="font-size: 15px;" disabled type="number" id="attack_iv_input" onchange="iv_update()" placeholder="Atk" min="0" max="15" step="1"> 
+			</div>
+
+			<div class="DEF">
+				<input style="font-size: 15px;" disabled type="number" id="defense_iv_input" onchange="iv_update()" placeholder="Def IV" min="0" max="15" step="1">
+			</div>
+
+			<div class="stamina">
+				<input style="font-size: 15px;" disabled type="number" id="stamina_iv_input" onchange="iv_update()" placeholder="Sta IV" min="0" max="15" step="1">
+			</div>
+		</div>
+		
+		<button class="button save_pokemon" onclick="add_entry()" disabled id='add_button'>Add To Collection</button>
+		<button class="button save_pokemon" onclick="confirm_edit()" style="display:none;" id='confirm_edit_button'>Save Changes</button>
+
+		<div class="calculate">
+			<h3 id='approximate_cp'>N/A</h3> <!--Used for Combat Power prediction display by Javascript-->
+		</div>
+
+		<button class="button reset" onclick="reset_entry()" disabled id='reset_button'>Reset Entry</button> <!--CSS makes this invisible by default-->
+		<button class="button reset" onclick="reset_entry()" style="display:none;" id='cancel_edit_button'>Cancel Edit</button> <!--Javascript makes it visible when in Edit mode-->
+
+		<button id="dpad" class="button level_up" disabled onclick="levelup(1)"></button>
+		<button id="dpad2" class="button level_jump_up" disabled onclick="levelup(5)"></button>
+		<button id="dpad3" class="button level_down" disabled onclick="levelup(-1)"></button>
+		<button id="dpad4" class="button level_jump_down" disabled onclick="levelup(-5)"></button>
+		<button id="dpad5" class="button directional_center" disabled></button>
+	</div>
+
+	<div class="container">
+		<div class="row" style="position:relative; top:-230px; margin-bottom:1em;"> <!--Saved Pokémon-->
+			<div class="col-sm-6">
+				<h1 style="margin-right:50px;text-align:right;font-size:3em; font-weight: bold;" id="team_name">Saved Pokémon</h1> <!--Saved Pokémon header--> 
+			</div>
+			<div class="col-sm-6">
+				<select style="margin-left:50px; height:4em;top:10px;position:relative; width:80%; font-size:15px;" onchange="update_saved_pokemon_display()" class="form-control" id="sort_order"><option>Most Recent</option><option>Combat Power</option><option>National Dex Number</option><option>Oldest</option></select> <!--Sorting options-->
+			</div>
+		</div>
+		<div class="saved_pokemon" id="saved_pokemon"></div> <!--Used to show the grid of saved Pokémon-->
+	</div>
+</div>
+</body>
+</html>
