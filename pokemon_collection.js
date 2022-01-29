@@ -92,6 +92,7 @@ function remove_entry(index) { //This function is activated when the user remove
 function edit_entry(index) { //This function is activated when the user presses the "Edit" button on a previously saved Pokémon
 	reset_entry(); //Remove anything already typed into the entry screen
 	document.getElementById("saved_pokemon").innerHTML=""; //Hide the list of saved Pokémon along with the Reset and Add buttons
+	document.getElementById("saved_pokemon").style.display="none";
 	document.getElementById("reset_button").style.display = "none"; 
 	document.getElementById("add_button").style.display = "none"; 
 	document.getElementById("confirm_edit_button").style.display = "inline"; //Show the Confirm and Cancel edit buttons
@@ -224,6 +225,7 @@ function update_saved_pokemon_display() { //Used to update the visual display wh
 	}
 	update_saved_cookie(); //Save the Pokémon list data to the user's cookie
 //	document.getElementById('pokemon_saved_0').scrollIntoView({behavior: "smooth"});
+
 	setTimeout(function() {
 		document.getElementById("saved_pokemon").innerHTML=saved_pokemon_html; //After writing the new HTML, insert it into the website
 		document.getElementById('saved_pokemon').style.opacity=1;
