@@ -86,13 +86,18 @@ h2{
 	font-size:2em;
 }
 
-.pokemon_infobox {
+.pokemon_infobox_collection {
 	display: flex;
 	justify-content: center;
 	margin-bottom:25px;
 	background-color:#e3deda;
 	border-radius:10%;
 	border: 4px solid #555;
+}
+
+.pokemon_infobox {
+	display: flex;
+	justify-content: center;	
 }
 
 .pokemon-image{
