@@ -1,33 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Pokémon Test</title>
-    <meta charset="utf-8"> <!--UTF8 Character set-->
-    <script src="pokemon_info.js"></script> <!--This sets the Pokémon info-->
-    <link rel="stylesheet" href="style.css"> <!--Custom stylings-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->
-  </head>
+<head>
+  <title>GO Raid Assistant</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <!--Required for Bootstrap-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--Required for Bootstrap-->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> <!--Required for Bootstrap-->	
+  <link rel="stylesheet" href="style.css"> <!--Custom Stylings-->
+</head>
 
-<body onload="page_init()" style="background-color:#EBE5E0"> <!--Runs page_init function on page load. This selects and displays the info for a random Pokémon among other tasks-->
-
-<div class="container-fluid">
-	<div style="text-align:center;padding-top:2em;padding-bottom:2em;">
-		<form autocomplete="off" onsubmit="return show_pokemon_info_from_entry()" onfocusout="activate_search_suggestion()">
-		  <div class="autocomplete" style="width:300px;">
-			<input id="name_input" type="text" name="name_input" placeholder="Enter Pokémon Name">
-			<div id="suggestions"></div>
-		  </div>
-		</form>
-		<img id="pokemon_image">
-		<h1 id="pokemon_name"></h1>
-		<h1 id="pokemon_type"></h1>
-		<h1 id="pokemon_fast"></h1>
-		<h1 id="pokemon_charged"></h1>
-		<h1 id="pokemon_stats"></h1>
-	</div>
+<body style="background-color:#dbcfc5">
+<div class="navbar" style="margin-bottom:2vw;">
+  <div class="navbar-header">
+	<a href="index.html"><img src="go_logo.png" alt="GO Raid Assistant" width="auto" height="40px" style="  position: absolute;top: 6px;left:6px"></a> <!--Website logo-->
+  </div>
+  <div class="navbar-item">
+	  <a href="raid_counters.html">Raid View</a>
+	  <a href="pokemon_collection.html">Manage Pokemon Collection</a>
+	  <a class="active" href="index.html">Home</a>  <!--Active Page-->
+  </div>
 </div>
 
+<div class="jumbotron text-center" style="background-color:#dbcfc5">
+  <h1>GO Raid Assistant</h1>
+  <p>Resize this responsive page to see the effect!</p>
+</div>
+
+<div style='background-color:#EBE5E0'>
+	<div class="container py-5">
+	  <div class="row border border-right-0 border-top-0 p2">
+		<div class="col-sm-9">
+		  <h3>How to use me</h3>
+		  <p>A Site for the elite pokemon gamers like me and you..! </p>
+		  <p>
+			This Website designed with love and care as a way of helping guys like you out there looking for a way to get the upper hand in raids and better loot.
+			Created as a college group project made by literal gamers who got together to design a way of choosing which pokemon out of your collection would be best used in any given raid your about to battle.
+			This giving you little help in hand in how well you will do.
+		  </p>
+		</div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2">
+		  <button type="button" class="btn btn-primary">Basic</button>
+		</div>
+	  </div>
+	</div>
+
+	<div class="container py-5">
+	  <div class="row border border-right-0 border-top-0 p2">
+		<div class="col-sm-9">
+		  <h3>Pokemon database Page</h3>
+		  <p>Enter your current best pokemon to store for our algorithms to desichper the best of the best</p>
+		  <p>
+			start of by entering the name of the pokemon you wish to add. An image will show up on the left verifying your choice and if your "close but no cigar!" a drop down box will give you some pokemon with similar characters.
+			next add the level and nickname incase you have more of one type. Lastly select the moves your pokemon pocesses from the dropdown boxes press the add button and it will be in your database ready to pick from.
+			A gallery of pokemon you have entered will be presented below and should you wish to edit that collection hover your mouse over the image an edit icon will apear and then you can change level attacks or simple delete all together.
+		  </p>
+		</div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2">
+		  <button type="button" class="btn btn-primary">Basic</button>
+		</div>
+	  </div>
+	</div>
+
+	<div class="container py-5">
+	  <div class="row border border-right-0 border-top-0 p2">
+		<div class="col-sm-9">
+		  <h3>Raid Page</h3>
+		  <p>The time is nigh..!</p>
+		  <p>
+			The time has come you've built your collection and established a database of pokemon and wish to choose the best to win.
+			again some input boxes will be presented just start to enter the name of the raid boss and select the one that pops up. enter the difficulty of the raid and voila..!
+			The magic algorithms will do its job scanning through your collection and picking out the best type attacks and level pokemon to determin your best pick for this battle your about to conquer!!
+		  </p>
+		</div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2">
+		  <button type="button" class="btn btn-primary">Basic</button>
+		</div>
+	  </div>
+	</div>
+</div>
 </body>
 </html>
