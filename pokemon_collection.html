@@ -92,11 +92,18 @@
 
 	<div class="container">
 		<div class="row" style="position:relative; top:-230px; margin-bottom:1em;"> <!--Saved Pokémon-->
-			<div class="col-sm-6">
-				<h1 style="margin-right:50px;text-align:right;font-size:3em; font-weight: bold;" id="team_name">Saved Pokémon</h1> <!--Saved Pokémon header--> 
+			<div class="col-sm-4">
+				<h1 style="text-align:right;font-size:2.5em; font-weight: bold;" id="team_name">Saved Pokémon</h1> <!--Saved Pokémon header--> 
 			</div>
-			<div class="col-sm-6">
-				<select style="margin-left:50px; height:4em;top:10px;position:relative; width:80%; font-size:15px;" onchange="update_saved_pokemon_display()" class="form-control" id="sort_order"><option>Most Recent</option><option>Combat Power</option><option>National Dex Number</option><option>Oldest</option></select> <!--Sorting options-->
+			<div class="col-sm-4">
+				<select style="margin-left:50px; height:4em;top:10px;position:relative; width:90%; font-size:15px;" onchange="update_saved_pokemon_display()" class="form-control" id="sort_order"><option>Most Recent</option><option>Combat Power</option><option>National Dex Number</option><option>Oldest</option></select> <!--Sorting options-->
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-light" style="margin-left:50px; height:4em;top:10px;position:relative; width:100%; font-size:15px;" onclick="export_json()">Export JSON</button> <!--Export JSON-->
+			</div>
+			<div class="col-sm-2">
+				<label for="import_button" class="button btn btn-light" style='background-color: #f1f1f1; color:black;margin-left:50px; height:4em;top:10px;position:relative; width:100%; font-size:15px;'>Import JSON</label>
+				<input type='file' onchange="import_json()" style="display:none" class="btn btn-light" id="import_button"/>
 			</div>
 		</div>
 		<div class="saved_pokemon" id="saved_pokemon"></div> <!--Used to show the grid of saved Pokémon-->
